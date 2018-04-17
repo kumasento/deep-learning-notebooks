@@ -1,0 +1,29 @@
+#!/bin/sh
+MODELS_DIR=../../models/research/slim
+MODEL_NAME=vgg_16
+DATASET_NAME=flowers
+DATASET_DIR=/mnt/data2/rz3515/datasets/${DATASET_NAME}
+TRAIN_DIR=/mnt/data2/rz3515/train/${MODEL_NAME}_${DATASET_NAME}_scratch
+SCOPES=vgg_16/fc8
+
+cd $MODELS_DIR
+python train_image_classifier.py \
+  --model_name $MODEL_NAME \
+  --dataset_dir  $DATASET_DIR\
+  --dataset_split_name train \
+  --dataset_name $DATASET_NAME \
+  --train_dir $TRAIN_DIR \
+  --max_number_of_steps 10000 \
+  --preprocessing_name $MODEL_NAME \
+  --train_image_size 224
+
+python eval_image_classifier.py \
+  --alsologtostderr \
+  --model_name $MODEL_NAME \
+  --dataset_dir $DATASET_DIR \
+  --dataset_split_name validation \
+  --dataset_name $DATASET_NAME \
+  --checkpoint_path $TRAIN_DIR \
+  --preprocessing_name $MODEL_NAME \
+  --eval_image_size 224
+cd -
